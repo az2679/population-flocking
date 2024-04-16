@@ -1,13 +1,15 @@
 class Boid {
-  constructor() {
+  constructor(flockingRadius) {
     this.position = createVector(random(width), random(height));
     this.velocity = p5.Vector.random2D();
     this.velocity.setMag(random(2, 4));
     this.acceleration = createVector();
-    this.maxForce = 0.2;
-    this.maxSpeed = 5;
+    this.maxForce = 0.1;
+    this.maxSpeed = 3; //5;
 
-    this.rad = 6;
+    this.rad = 10; //6;
+
+    this.flockingRadius = flockingRadius;
   }
 
   edges() {
@@ -47,8 +49,8 @@ class Boid {
     return steering;
   }
 
-  cohesion(boids) {
-    let perceptionRadius = 50;
+  cohesion(boids, perception) {
+    let perceptionRadius = perception;
     let steering = createVector();
     let total = 0;
 
@@ -70,8 +72,8 @@ class Boid {
     return steering;
   }
 
-  separation(boids) {
-    let perceptionRadius = 50;
+  separation(boids, perception) {
+    let perceptionRadius = perception;
     let steering = createVector();
     let total = 0;
 
@@ -96,13 +98,45 @@ class Boid {
   }
 
   flock(boids) {
-    let alignment = this.align(boids);
-    let cohesion = this.cohesion(boids);
-    let separation = this.separation(boids);
+    let perceptionRadius = this.flocking;
+    let total = 0;
 
-    alignment.mult(alignSlider.value());
+    let separationScale = 1;
+    let separationPerception = 50;
+
+    let cohesionScale = 1;
+    let cohesionPerception = 50;
+
+    for (let other of boids) {
+      let d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
+      if (other != this && d < perceptionRadius) {
+        total++;
+      }
+
+      if (total > 6) {
+        separationScale = 1.5;
+        separationPerception = 70;
+      } else if (total < 3) {
+        cohesionScale = 1.1;
+        cohesionPerception = 120;
+      } else {
+        cohesionScale = 1;
+        cohesionPerception = 50;
+        separationScale = 1;
+        separationPerception = 50;
+      }
+    }
+
+    let alignment = this.align(boids);
+    let cohesion = this.cohesion(boids, cohesionPerception);
+    let separation = this.separation(boids, separationPerception);
+
+    alignment.mult(alignmentSlider.value());
     cohesion.mult(cohesionSlider.value());
     separation.mult(separationSlider.value());
+
+    cohesion.mult(cohesionScale);
+    separation.mult(separationScale);
 
     //force accumulation, sum
     this.acceleration.add(alignment);
