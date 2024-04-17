@@ -19,7 +19,7 @@ function setup() {
   separationP.position(270, windowHeight / 2 + 10);
 
   for (let i = 0; i < 70; i++) {
-    flock.push(new Boid(flockingRadius));
+    flock.push(new Boid(random(width), random(height), flockingRadius));
   }
   // console.log(flock[0]);
 }
@@ -27,12 +27,32 @@ function setup() {
 function draw() {
   background(51);
 
+  let deadBoids = [];
+  let birthedBoids = [];
+
   for (let boid of flock) {
+    if (boid.death()) {
+      deadBoids.push(boid);
+    }
+    if (boid.birth()) {
+      birthedBoids.push(new Boid(boid.position.x, boid.position.y, flockingRadius));
+    }
+
     boid.edges();
     boid.flock(flock);
     boid.update();
     boid.show();
   }
+
+  for (let boid of deadBoids) {
+    let index = flock.indexOf(boid);
+    if (index !== -1) {
+      flock.splice(index, 1);
+    }
+  }
+  flock.push(...birthedBoids);
+
+  console.log(flock.length);
 
   stroke(255);
   noFill();
@@ -40,4 +60,5 @@ function draw() {
 
   // console.log(flock[0].timer1, flock[0].timer2, flock[0].lifeForce);
   // console.log(flock[0].lifeForce);
+  // console.log(flock[0].lifeForce, flock[0].birth(), flock[0].death());
 }

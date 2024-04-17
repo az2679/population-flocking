@@ -1,6 +1,6 @@
 class Boid {
-  constructor(flockingRadius) {
-    this.position = createVector(random(width), random(height));
+  constructor(x, y, flockingRadius) {
+    this.position = createVector(x, y);
     this.velocity = p5.Vector.random2D();
     this.velocity.setMag(random(2, 4));
     this.acceleration = createVector();
@@ -14,6 +14,27 @@ class Boid {
     this.lifeForce = 5; //150;
     this.timer1 = 0;
     this.timer2 = 0;
+    this.birthState = true;
+  }
+
+  // birth() {
+  //   return this.lifeForce >= 10;
+  // }
+  birth() {
+    if (this.lifeForce >= 10 && this.birthState) {
+      this.birthState = false;
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  death() {
+    return this.lifeForce <= 0;
+  }
+
+  finished() {
+    return this.lifeForce <= 0;
   }
 
   edges() {
@@ -177,14 +198,18 @@ class Boid {
     this.velocity.limit(this.maxSpeed);
     this.acceleration.mult(0);
 
-    this.lifeForce = constrain(this.lifeForce, 0, 255);
+    this.lifeForce = constrain(this.lifeForce, 0, 10);
+    if (this.lifeForce < 10) {
+      this.birthState = true;
+    }
   }
 
   show() {
     strokeWeight(1.5);
     stroke(255);
-    // fill(this.lifeForce);
-    fill(this.lifeForce * 50);
+
+    //fill(this.lifeForce * 50);
+    fill(map(this.lifeForce, 0, 10, 0, 255));
 
     //point(this.position.x, this.position.y);
 
