@@ -15,6 +15,19 @@ class Boid {
     this.flockingRadius = flockingRadius;
   }
 
+  repulse(target) {
+    let force = p5.Vector.sub(target.position, this.position);
+    let d = force.mag();
+    d = constrain(d, 1, this.affectRadius);
+    let G = 50;
+    let strength = G / (d * d);
+    force.setMag(strength);
+    if (d < this.affectRadius) {
+      force.mult(-10);
+    }
+    this.acceleration.add(force);
+  }
+
   edges() {
     if (this.position.x > width) {
       this.position.x = 0;
@@ -110,6 +123,8 @@ class Boid {
     alignment.mult(alignmentSlider.value());
     cohesion.mult(cohesionSlider.value());
     separation.mult(separationSlider.value());
+
+    cohesion.mult(1.4);
 
     this.acceleration.add(alignment);
     this.acceleration.add(cohesion);

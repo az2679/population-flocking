@@ -1,32 +1,32 @@
-class parasiteBoid extends Boid {
+class healerBoid extends Boid {
   constructor(x, y, flockingRadius, affectRadius) {
     super(x, y, flockingRadius);
 
     this.affectRadius = affectRadius;
-    this.infectedBoids = new Map();
+    this.healedBoids = new Map();
   }
 
-  infect(boids) {
+  heal(boids) {
     let perceptionRadius = this.affectRadius;
     let proximityDuration = 30;
 
     for (let other of boids) {
       let d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
       if (other != this && d < perceptionRadius) {
-        if (!this.infectedBoids.has(other)) {
-          this.infectedBoids.set(other, 0);
+        if (!this.healedBoids.has(other)) {
+          this.healedBoids.set(other, 0);
         }
-        let timer = this.infectedBoids.get(other);
+        let timer = this.healedBoids.get(other);
 
         if (timer >= proximityDuration) {
-          other.lifeForce -= 1;
-          this.infectedBoids.set(other, 0);
+          other.lifeForce += 1;
+          this.healedBoids.set(other, 0);
         } else {
-          this.infectedBoids.set(other, timer);
+          this.healedBoids.set(other, timer);
         }
       } else {
-        if (this.infectedBoids.has(other)) {
-          this.infectedBoids.delete(other);
+        if (this.healedBoids.has(other)) {
+          this.healedBoids.delete(other);
         }
       }
     }
@@ -35,21 +35,21 @@ class parasiteBoid extends Boid {
   seek(boids) {
     let perceptionRadius = this.flockingRadius;
     let steering = createVector();
-    let healthiestBoid;
-    let highestLifeForce = 0;
+    let weakestBoid;
+    let lowestLifeForce = 10;
 
     for (let other of boids) {
       let d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
       if (other != this && d < perceptionRadius) {
-        if (other.lifeForce > highestLifeForce) {
-          highestLifeForce = other.lifeForce;
-          healthiestBoid = other;
+        if (other.lifeForce < lowestLifeForce) {
+          lowestLifeForce = other.lifeForce;
+          weakestBoid = other;
         }
       }
     }
 
-    if (highestLifeForce > 0) {
-      let desired = p5.Vector.sub(healthiestBoid.position, this.position);
+    if (lowestLifeForce > 0) {
+      let desired = p5.Vector.sub(weakestBoid.position, this.position);
       desired.setMag(this.maxSpeed);
       steering = p5.Vector.sub(desired, this.velocity);
       steering.limit(this.maxForce);
@@ -60,7 +60,7 @@ class parasiteBoid extends Boid {
   show() {
     strokeWeight(1.5);
     stroke(255);
-    fill(255, 0, 0, 150);
+    fill(0, 255, 0, 150);
 
     push();
     translate(this.position.x, this.position.y);
