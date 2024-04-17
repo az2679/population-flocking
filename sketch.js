@@ -37,4 +37,7 @@ function draw() {
   stroke(255);
   noFill();
   ellipse(flock[0].position.x, flock[0].position.y, flockingRadius);
+
+  // console.log(flock[0].timer1, flock[0].timer2, flock[0].lifeForce);
+  // console.log(flock[0].lifeForce);
 }

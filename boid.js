@@ -10,6 +10,10 @@ class Boid {
     this.rad = 10; //6;
 
     this.flockingRadius = flockingRadius;
+
+    this.lifeForce = 5; //150;
+    this.timer1 = 0;
+    this.timer2 = 0;
   }
 
   edges() {
@@ -114,19 +118,38 @@ class Boid {
       if (other != this && d < perceptionRadius) {
         total++;
       }
+    }
+    if (total > 9) {
+      separationScale = 1.5;
+      separationPerception = 100;
+    } else if (total < 3) {
+      cohesionScale = 1.1;
+      cohesionPerception = 150;
+    } else {
+      cohesionScale = 1;
+      cohesionPerception = 50;
+      separationScale = 1;
+      separationPerception = 50;
+    }
 
-      if (total > 6) {
-        separationScale = 1.5;
-        separationPerception = 100;
-      } else if (total < 3) {
-        cohesionScale = 1.1;
-        cohesionPerception = 150;
-      } else {
-        cohesionScale = 1;
-        cohesionPerception = 50;
-        separationScale = 1;
-        separationPerception = 50;
+    if (total >= 3 && total <= 9) {
+      this.timer1++;
+      if (this.timer1 >= 30) {
+        this.lifeForce += 1;
+        this.timer1 = 0;
       }
+    } else {
+      this.timer1 = 0;
+    }
+
+    if (total < 3 || total > 9) {
+      this.timer2++;
+      if (this.timer2 >= 60) {
+        this.lifeForce -= 1;
+        this.timer2 = 0;
+      }
+    } else {
+      this.timer2 = 0;
     }
 
     let alignment = this.align(boids, alignmentPerception);
@@ -153,12 +176,15 @@ class Boid {
     this.velocity.add(this.acceleration);
     this.velocity.limit(this.maxSpeed);
     this.acceleration.mult(0);
+
+    this.lifeForce = constrain(this.lifeForce, 0, 255);
   }
 
   show() {
     strokeWeight(1.5);
     stroke(255);
-    // fill(0);
+    // fill(this.lifeForce);
+    fill(this.lifeForce * 50);
 
     //point(this.position.x, this.position.y);
 
