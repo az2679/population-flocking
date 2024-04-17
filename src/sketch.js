@@ -1,9 +1,12 @@
 const flock = [];
+const parasites = [];
 
 let alignmentSlider, cohesionSlider, separationSlider;
 let alignmentP, cohesionP, separationP;
 
 let flockingRadius = 150;
+let parasiteRadius = 500;
+let infectionRadius = 150;
 
 function setup() {
   createCanvas(windowWidth, windowHeight / 2);
@@ -19,9 +22,11 @@ function setup() {
   separationP.position(270, windowHeight / 2 + 10);
 
   for (let i = 0; i < 70; i++) {
-    flock.push(new Boid(random(width), random(height), flockingRadius));
+    flock.push(new regularBoid(random(width), random(height), flockingRadius));
   }
-  // console.log(flock[0]);
+
+  parasites.push(new parasiteBoid(random(width), random(height), parasiteRadius));
+  console.log(flock[0]);
 }
 
 function draw() {
@@ -35,7 +40,7 @@ function draw() {
       deadBoids.push(boid);
     }
     if (boid.birth()) {
-      birthedBoids.push(new Boid(boid.position.x, boid.position.y, flockingRadius));
+      birthedBoids.push(new regularBoid(boid.position.x, boid.position.y, flockingRadius));
     }
 
     boid.edges();
@@ -52,13 +57,30 @@ function draw() {
   }
   flock.push(...birthedBoids);
 
-  console.log(flock.length);
+  for (let parasite of parasites) {
+    parasite.infect(flock);
+    parasite.seek(flock);
+
+    parasite.edges();
+    parasite.flock(flock);
+    parasite.update();
+    parasite.show();
+  }
+
+  // console.log(flock.length);
 
   stroke(255);
   noFill();
   ellipse(flock[0].position.x, flock[0].position.y, flockingRadius);
 
-  // console.log(flock[0].timer1, flock[0].timer2, flock[0].lifeForce);
-  // console.log(flock[0].lifeForce);
-  // console.log(flock[0].lifeForce, flock[0].birth(), flock[0].death());
+  noStroke();
+  fill(255, 0, 0, 5);
+  ellipse(parasites[0].position.x, parasites[0].position.y, parasiteRadius);
+  stroke(255, 0, 0, 40);
+  noFill();
+  ellipse(parasites[0].position.x, parasites[0].position.y, infectionRadius);
+
+  flock[0].lifeForce = 10;
+
+  // console.log(parasites[0].infectedBoids.length);
 }
