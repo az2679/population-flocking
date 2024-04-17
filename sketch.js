@@ -11,14 +11,14 @@ function setup() {
   alignmentSlider = createSlider(0, 2, 1, 0.1);
   cohesionSlider = createSlider(0, 2, 1, 0.1);
   separationSlider = createSlider(0, 2, 1, 0.1);
-  alignmentP = createP(`alignment: ${alignmentSlider.value()}`);
+  alignmentP = createP(`alignment`);
   alignmentP.position(5, windowHeight / 2 + 10);
-  cohesionP = createP(`cohesion: ${cohesionSlider.value()}`);
+  cohesionP = createP(`cohesion`);
   cohesionP.position(140, windowHeight / 2 + 10);
-  separationP = createP(`separation: ${separationSlider.value()}`);
+  separationP = createP(`separation`);
   separationP.position(270, windowHeight / 2 + 10);
 
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 70; i++) {
     flock.push(new Boid(flockingRadius));
   }
   // console.log(flock[0]);

@@ -26,8 +26,8 @@ class Boid {
     }
   }
 
-  align(boids) {
-    let perceptionRadius = 50;
+  align(boids, perception) {
+    let perceptionRadius = perception;
     let steering = createVector();
     let total = 0;
 
@@ -98,7 +98,7 @@ class Boid {
   }
 
   flock(boids) {
-    let perceptionRadius = this.flocking;
+    let perceptionRadius = this.flockingRadius;
     let total = 0;
 
     let separationScale = 1;
@@ -106,6 +106,8 @@ class Boid {
 
     let cohesionScale = 1;
     let cohesionPerception = 50;
+
+    let alignmentPerception = 70;
 
     for (let other of boids) {
       let d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
@@ -115,10 +117,10 @@ class Boid {
 
       if (total > 6) {
         separationScale = 1.5;
-        separationPerception = 70;
+        separationPerception = 100;
       } else if (total < 3) {
         cohesionScale = 1.1;
-        cohesionPerception = 120;
+        cohesionPerception = 150;
       } else {
         cohesionScale = 1;
         cohesionPerception = 50;
@@ -127,18 +129,20 @@ class Boid {
       }
     }
 
-    let alignment = this.align(boids);
+    let alignment = this.align(boids, alignmentPerception);
     let cohesion = this.cohesion(boids, cohesionPerception);
     let separation = this.separation(boids, separationPerception);
+
+    cohesion.mult(cohesionScale);
+    separation.mult(separationScale);
+
+    cohesion.mult(1.4);
+    // alignment.mult(1.2);
 
     alignment.mult(alignmentSlider.value());
     cohesion.mult(cohesionSlider.value());
     separation.mult(separationSlider.value());
 
-    cohesion.mult(cohesionScale);
-    separation.mult(separationScale);
-
-    //force accumulation, sum
     this.acceleration.add(alignment);
     this.acceleration.add(cohesion);
     this.acceleration.add(separation);
