@@ -1,6 +1,5 @@
-//Flocking Simulation
+//Flocking Simulation, https://thecodingtrain.com/challenges/124-flocking-simulation
 //The Coding Train, Daniel Shiffman
-//https://thecodingtrain.com/challenges/124-flocking-simulation
 
 class Boid {
   constructor(x, y, flockingRadius) {

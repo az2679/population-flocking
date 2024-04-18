@@ -1,3 +1,6 @@
+// The Game of Life, https://thecodingtrain.com/tracks/the-nature-of-code-2/85-the-game-of-life
+// The Coding Train, Daniel Shiffman
+
 class regularBoid extends Boid {
   constructor(x, y, flockingRadius) {
     super(x, y, flockingRadius);

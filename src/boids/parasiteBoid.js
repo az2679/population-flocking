@@ -1,3 +1,7 @@
+// Seeking A Target, https://thecodingtrain.com/tracks/the-nature-of-code-2/noc/5-autonomous-agents/2-seeking-a-target
+// Attraction and Repulsion Forces, https://thecodingtrain.com/challenges/56-attraction-and-repulsion-forces
+// The Coding Train, Daniel Shiffman
+
 class parasiteBoid extends Boid {
   constructor(x, y, flockingRadius, affectRadius) {
     super(x, y, flockingRadius);
