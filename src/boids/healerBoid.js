@@ -40,7 +40,7 @@ class healerBoid extends Boid {
     let perceptionRadius = this.flockingRadius;
     let steering = createVector();
     let weakestBoid;
-    let lowestLifeForce = 10;
+    let lowestLifeForce = Infinity;
 
     for (let other of boids) {
       let d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
@@ -52,7 +52,7 @@ class healerBoid extends Boid {
       }
     }
 
-    if (lowestLifeForce > 0) {
+    if (weakestBoid && lowestLifeForce > 0) {
       let desired = p5.Vector.sub(weakestBoid.position, this.position);
       desired.setMag(this.maxSpeed);
       steering = p5.Vector.sub(desired, this.velocity);
@@ -63,7 +63,7 @@ class healerBoid extends Boid {
 
   show() {
     strokeWeight(1.5);
-    stroke(255);
+    stroke(0, 255, 0, 150);
     fill(0, 255, 0, 150);
 
     push();

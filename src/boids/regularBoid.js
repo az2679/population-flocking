@@ -84,10 +84,6 @@ class regularBoid extends Boid {
 
     cohesion.mult(1.4);
 
-    alignment.mult(alignmentSlider.value());
-    cohesion.mult(cohesionSlider.value());
-    separation.mult(separationSlider.value());
-
     this.acceleration.add(alignment);
     this.acceleration.add(cohesion);
     this.acceleration.add(separation);
@@ -107,7 +103,7 @@ class regularBoid extends Boid {
 
   show() {
     strokeWeight(1.5);
-    stroke(255);
+    stroke(map(this.lifeForce, 0, 10, 150, 255));
     fill(map(this.lifeForce, 0, 10, 0, 255));
 
     push();

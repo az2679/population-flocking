@@ -40,7 +40,7 @@ class parasiteBoid extends Boid {
     let perceptionRadius = this.flockingRadius;
     let steering = createVector();
     let healthiestBoid;
-    let highestLifeForce = 0;
+    let highestLifeForce = -Infinity;
 
     for (let other of boids) {
       let d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
@@ -52,7 +52,7 @@ class parasiteBoid extends Boid {
       }
     }
 
-    if (highestLifeForce > 0) {
+    if (healthiestBoid && highestLifeForce > 0) {
       let desired = p5.Vector.sub(healthiestBoid.position, this.position);
       desired.setMag(this.maxSpeed);
       steering = p5.Vector.sub(desired, this.velocity);
@@ -63,7 +63,7 @@ class parasiteBoid extends Boid {
 
   show() {
     strokeWeight(1.5);
-    stroke(255);
+    stroke(255, 0, 0, 150);
     fill(255, 0, 0, 150);
 
     push();

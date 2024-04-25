@@ -119,10 +119,6 @@ class Boid {
     let cohesion = this.cohesion(boids, cohesionPerception);
     let separation = this.separation(boids, separationPerception);
 
-    alignment.mult(alignmentSlider.value());
-    cohesion.mult(cohesionSlider.value());
-    separation.mult(separationSlider.value());
-
     cohesion.mult(1.4);
 
     this.acceleration.add(alignment);
