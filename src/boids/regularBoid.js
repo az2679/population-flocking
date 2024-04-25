@@ -2,13 +2,38 @@
 // The Coding Train, Daniel Shiffman
 
 class regularBoid extends Boid {
-  constructor(x, y, flockingRadius) {
+  constructor(x, y, flockingRadius, dna, totalBoids) {
     super(x, y, flockingRadius);
 
+    //game of life
     this.lifeForce = 5;
     this.lifeTimer = 0;
     this.deathTimer = 0;
     this.birthState = true;
+
+    //genetic algorithm
+    this.dna = dna;
+    this.fitness = 0;
+    this.fitnessTimer = 0;
+    this.geneCounter = 0;
+  }
+
+  calcFitness() {
+    this.fitness = this.lifeForce + 1;
+    this.fitness = pow(this.fitness, 2);
+
+    if (this.lifeForce === 0) {
+      this.fitness *= 0.1;
+    }
+  }
+
+  run() {
+    this.applyForce(this.dna.genes[this.geneCounter]);
+    this.geneCounter = (this.geneCounter + 1) % this.dna.genes.length;
+  }
+
+  applyForce(force) {
+    this.acceleration.add(force);
   }
 
   birth() {
@@ -67,7 +92,7 @@ class regularBoid extends Boid {
 
     if (total < 3 || total > 9) {
       this.deathTimer++;
-      if (this.deathTimer >= 60) {
+      if (this.deathTimer >= 15) {
         this.lifeForce -= 1;
         this.deathTimer = 0;
       }
@@ -111,5 +136,13 @@ class regularBoid extends Boid {
     rotate(this.velocity.heading());
     triangle(-this.size, -this.size * 0.5, -this.size, this.size * 0.5, this.size * 0.25, 0);
     pop();
+  }
+
+  getFitness() {
+    return this.fitness;
+  }
+
+  getDNA() {
+    return this.dna;
   }
 }

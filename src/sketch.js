@@ -1,91 +1,45 @@
-const flock = [];
-const parasites = [];
-const healers = [];
-
-let alignmentSlider, cohesionSlider, separationSlider;
-let alignmentP, cohesionP, separationP;
-
-let flockingRadius = 75;
-let parasiteRadius = 150;
-let infectRadius = 75;
-let healerRadius = 150;
-let healRadius = 75;
+let lifetime; // How long should each generation live
+let population; // Population
+let lifecycle; // Timer for cycle of generation
+let recordtime; // Fastest time to target
 
 function setup() {
-  createCanvas(windowWidth, windowHeight / 2);
+  createCanvas(windowWidth, windowHeight * 0.6);
 
-  for (let i = 0; i < 70; i++) {
-    flock.push(new regularBoid(random(width), random(height), flockingRadius));
-  }
+  lifetime = 300;
+  lifecycle = 0;
+  recordtime = lifetime;
 
-  parasites.push(new parasiteBoid(random(width), random(height), parasiteRadius, infectRadius));
-  healers.push(new healerBoid(random(width), random(height), healerRadius, healRadius));
+  let mutationRate = 0.01;
+  population = new Population(mutationRate, 150);
 }
 
 function draw() {
   background(51);
 
-  let deadBoids = [];
-  let birthedBoids = [];
+  // // If the generation hasn't ended yet
+  // if (lifecycle < lifetime) {
+  population.live();
+  //   if (population.targetReached() && lifecycle < recordtime) {
+  //     recordtime = lifecycle;
+  //   }
+  //   lifecycle++;
+  //   // Otherwise a new generation
+  // } else {
+  //   lifecycle = 0;
+  //   population.calcFitness();
+  //   population.selection();
+  //   population.reproduction();
+  // }
 
-  for (let boid of flock) {
-    if (boid.death()) {
-      deadBoids.push(boid);
-    }
-    if (boid.birth()) {
-      birthedBoids.push(new regularBoid(boid.position.x, boid.position.y, flockingRadius));
-    }
-    boid.edges();
-    boid.flock(flock);
-    boid.update();
-    boid.show();
-  }
-
-  for (let boid of deadBoids) {
-    let index = flock.indexOf(boid);
-    if (index !== -1) {
-      flock.splice(index, 1);
-    }
-  }
-  flock.push(...birthedBoids);
-
-  for (let parasite of parasites) {
-    parasite.repulse(healers[0]);
-    parasite.infect(flock);
-    parasite.seek(flock);
-    parasite.flock(flock);
-    parasite.edges();
-    parasite.update();
-    parasite.show();
-  }
-
-  for (let healer of healers) {
-    healer.repulse(parasites[0]);
-    healer.heal(flock);
-    healer.seek(flock);
-    healer.flock(flock);
-    healer.edges();
-    healer.update();
-    healer.show();
-  }
-
-  // console.log(flock.length);
+  // Display some info
+  // fill(0);
+  // noStroke();
+  text('Generation #: ' + population.getGenerations(), 10, 18);
+  text('Cycles left: ' + (lifetime - lifecycle), 10, 36);
+  text('Record cycles: ' + recordtime, 10, 54);
 
   stroke(255, 255, 255, 100);
   noFill();
-  ellipse(flock[0].position.x, flock[0].position.y, flockingRadius * 2);
-
-  noStroke();
-  fill(255, 0, 0, 15);
-  ellipse(parasites[0].position.x, parasites[0].position.y, parasiteRadius * 2);
-  stroke(255, 0, 0, 50);
-  noFill();
-  ellipse(parasites[0].position.x, parasites[0].position.y, infectRadius * 2);
-
-  noStroke();
-  fill(0, 255, 0, 5);
-  ellipse(healers[0].position.x, healers[0].position.y, healerRadius * 2);
-  stroke(0, 255, 0, 30);
-  noFill();
-  ellipse(healers[0].position.x, healers[0].position.y, healRadius * 2);
+  ellipse(population.population[0].position.x, population.population[0].position.y, population.flockingRadius * 2);
 }
