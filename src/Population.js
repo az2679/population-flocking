@@ -78,7 +78,7 @@ class Population {
   }
 
   reproduction() {
-    let positions = this.population.map((boid) => createVector(boid.position.x, boid.position.y));
+    // let positions = this.population.map((boid) => createVector(boid.position.x, boid.position.y));
 
     for (let i = 0; i < this.population.length; i++) {
       let m = int(random(this.matingPool.length));
@@ -93,13 +93,14 @@ class Population {
       let child = momgenes.crossover(dadgenes);
       child.mutate(this.mutationRate);
 
-      this.population[i] = new smartBoid(positions[i], this.flockingRadius, child, this.population.length);
-      this.population[i] = new smartBoid(
-        createVector(random(width), random(height)),
-        this.flockingRadius,
-        child,
-        this.population.length
-      );
+      // this.population[i] = new smartBoid(positions[i], this.flockingRadius, child, this.population.length);
+      // this.population[i] = new smartBoid(
+      //   createVector(random(width), random(height)),
+      //   this.flockingRadius,
+      //   child,
+      //   this.population.length
+      // );
+      this.population[i].genes = child;
     }
     this.generations++;
   }
