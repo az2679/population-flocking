@@ -1,39 +1,34 @@
-// The Game of Life, https://thecodingtrain.com/tracks/the-nature-of-code-2/85-the-game-of-life
-// The Coding Train, Daniel Shiffman
+// Smart Rockets, https://thecodingtrain.com/more/achive/nature-of-code/9-genetic-algorithms/9.5-fitness-genotype-vs-phenotype.html
+// The Coding Train / Daniel Shiffman
 
-class regularBoid extends Boid {
-  constructor(position, flockingRadius) {
-    super(position, flockingRadius);
+class smartBoid extends regularBoid {
+  constructor(position, flockingRadius, dna, lifeForce, lifeTimer, deathTimer, birthState) {
+    super(position, flockingRadius, lifeForce, lifeTimer, deathTimer, birthState);
 
-    this.lifeForce = 5;
-    this.lifeTimer = 0;
-    this.deathTimer = 0;
-    this.birthState = true;
+    this.dna = dna;
+    this.fitness = 0;
   }
 
-  birth() {
-    if (this.lifeForce >= 10 && this.birthState) {
-      this.birthState = false;
-      return true;
-    } else {
-      return false;
+  calcFitness() {
+    this.fitness = this.lifeForce + 1;
+    this.fitness = pow(this.fitness, 2);
+
+    if (this.lifeForce === 0) {
+      this.fitness *= 0.1;
     }
   }
 
-  death() {
-    return this.lifeForce <= 0;
+  run(boids) {
+    this.flock(boids, this.dna.genes);
   }
 
-  flock(boids) {
+  flock(boids, genes) {
     let perceptionRadius = this.flockingRadius;
     let total = 0;
-
     let separationScale = 1;
     let separationPerception = 50;
-
     let cohesionScale = 1;
     let cohesionPerception = 50;
-
     let alignmentPerception = 70;
 
     for (let other of boids) {
@@ -43,11 +38,11 @@ class regularBoid extends Boid {
       }
     }
     if (total > 9) {
-      separationScale = 1.5;
-      separationPerception = 100;
+      separationScale = genes[0];
+      separationPerception = genes[1];
     } else if (total < 3) {
-      cohesionScale = 1.1;
-      cohesionPerception = 150;
+      cohesionScale = genes[2];
+      cohesionPerception = genes[3];
     } else {
       cohesionScale = 1;
       cohesionPerception = 50;
@@ -89,27 +84,11 @@ class regularBoid extends Boid {
     this.acceleration.add(separation);
   }
 
-  update() {
-    this.position.add(this.velocity);
-    this.velocity.add(this.acceleration);
-    this.velocity.limit(this.maxSpeed);
-    this.acceleration.mult(0);
-
-    this.lifeForce = constrain(this.lifeForce, 0, 10);
-    if (this.lifeForce < 10) {
-      this.birthState = true;
-    }
+  getFitness() {
+    return this.fitness;
   }
 
-  show() {
-    strokeWeight(1.5);
-    stroke(map(this.lifeForce, 0, 10, 150, 255));
-    fill(map(this.lifeForce, 0, 10, 0, 255));
-
-    push();
-    translate(this.position.x, this.position.y);
-    rotate(this.velocity.heading());
-    triangle(-this.size, -this.size * 0.5, -this.size, this.size * 0.5, this.size * 0.25, 0);
-    pop();
+  getDNA() {
+    return this.dna;
   }
 }

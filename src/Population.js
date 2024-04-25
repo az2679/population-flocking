@@ -10,9 +10,8 @@ class Population {
     this.flockingRadius = 75;
 
     for (let i = 0; i < this.population.length; i++) {
-      this.population[i] = new regularBoid(
-        random(width),
-        random(height),
+      this.population[i] = new smartBoid(
+        createVector(random(width), random(height)),
         this.flockingRadius,
         new DNA(),
         this.population.length
@@ -30,18 +29,17 @@ class Population {
       }
       if (this.population[i].birth()) {
         birthedBoids.push(
-          new regularBoid(
-            this.population[i].position.x,
-            this.population[i].position.y,
+          new smartBoid(
+            createVector(this.population[i].position.x, this.population[i].position.y),
             this.flockingRadius,
             new DNA(),
             this.population.length
           )
         );
       }
-      this.population[i].run();
+      this.population[i].run(this.population);
       this.population[i].edges();
-      this.population[i].flock(this.population);
+      // this.population[i].flock(this.population);
       this.population[i].update();
       this.population[i].show();
     }
@@ -53,8 +51,6 @@ class Population {
       }
     }
     this.population.push(...birthedBoids);
-
-    console.log(this.population.length);
   }
 
   calcFitness() {
@@ -82,24 +78,28 @@ class Population {
   }
 
   reproduction() {
-    // Refill the population with children from the mating pool
+    let positions = this.population.map((boid) => createVector(boid.position.x, boid.position.y));
+
     for (let i = 0; i < this.population.length; i++) {
-      // Sping the wheel of fortune to pick two parents
       let m = int(random(this.matingPool.length));
       let d = int(random(this.matingPool.length));
-      // Pick two parents
+
       let mom = this.matingPool[m];
       let dad = this.matingPool[d];
-      // Get their genes
+
       let momgenes = mom.getDNA();
       let dadgenes = dad.getDNA();
-      // Mate their genes
+
       let child = momgenes.crossover(dadgenes);
-      // Mutate their genes
       child.mutate(this.mutationRate);
-      // Fill the new population with the new child
-      let position = createVector(width / 2, height + 20);
-      this.population[i] = new Rocket(position, child, this.population.length);
+
+      this.population[i] = new smartBoid(positions[i], this.flockingRadius, child, this.population.length);
+      this.population[i] = new smartBoid(
+        createVector(random(width), random(height)),
+        this.flockingRadius,
+        child,
+        this.population.length
+      );
     }
     this.generations++;
   }

@@ -2,8 +2,8 @@
 //The Coding Train, Daniel Shiffman
 
 class Boid {
-  constructor(x, y, flockingRadius) {
-    this.position = createVector(x, y);
+  constructor(position, flockingRadius) {
+    this.position = position.copy();
     this.velocity = p5.Vector.random2D();
     this.velocity.setMag(random(2, 4));
     this.acceleration = createVector();
