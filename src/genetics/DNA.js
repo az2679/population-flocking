@@ -7,13 +7,15 @@ class DNA {
     if (newgenes) {
       this.genes = newgenes;
     } else {
-      this.genes = [];
-      for (let i = 0; i < 4; i++) {
-        this.genes[0] = random(1, 2);
-        this.genes[1] = random(50, 150);
-        this.genes[2] = random(1, 2);
-        this.genes[3] = random(50, 150);
-      }
+      this.genes = [
+        random(1, 2), //separation force scalar
+        random(50, 150), //separation perception radius
+        random(1, 2), //cohesion force scalar
+        random(50, 150), //cohesion perception radius
+        random(0, 360), //hue
+        random(60, 100), //saturation
+        random(30, 80), //lightness
+      ];
     }
   }
 
@@ -27,10 +29,9 @@ class DNA {
   }
 
   mutate(m) {
-    for (let i = 0; i < this.genes.length; i += 2) {
+    for (let i = 0; i < this.genes.length; i++) {
       if (random(1) < m) {
-        this.genes[i] = random(1, 5);
-        this.genes[i + 1] = random(50, 200);
+        this.genes[i] *= random(2);
       }
     }
   }

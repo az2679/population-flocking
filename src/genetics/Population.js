@@ -43,7 +43,6 @@ class Population {
       this.population[i].edges();
       // this.population[i].flock(this.population);
       this.population[i].update();
-      this.population[i].show();
     }
 
     for (let boid of deadBoids) {

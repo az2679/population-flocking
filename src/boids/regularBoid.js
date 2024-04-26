@@ -9,6 +9,14 @@ class regularBoid extends Boid {
     this.lifeTimer = 0;
     this.deathTimer = 0;
     this.birthState = true;
+
+    this.positionHistory = [];
+
+    this.r = random(255);
+    this.g = random(255);
+    this.b = random(255);
+
+    this.angle = 0;
   }
 
   birth() {
@@ -99,17 +107,46 @@ class regularBoid extends Boid {
     if (this.lifeForce < 10) {
       this.birthState = true;
     }
+
+    if (frameCount % 5 === 0) {
+      this.positionHistory.push(this.position.copy());
+      if (this.positionHistory.length > 3) {
+        this.positionHistory.shift();
+      }
+    }
   }
 
   show() {
-    strokeWeight(1.5);
+    strokeWeight(2);
     stroke(map(this.lifeForce, 0, 10, 150, 255));
     fill(map(this.lifeForce, 0, 10, 0, 255));
 
+    ellipse(this.position.x, this.position.y, this.size * 0.2);
+
+    const numDots = 8;
+    const radius = this.size / 3;
+    const smallLine = this.size * 0.2;
+    const largeLine = this.size * 0.4;
     push();
     translate(this.position.x, this.position.y);
     rotate(this.velocity.heading());
-    triangle(-this.size, -this.size * 0.5, -this.size, this.size * 0.5, this.size * 0.25, 0);
+    for (let i = 0; i < numDots; i++) {
+      this.angle = map(i, 0, numDots, 0, TWO_PI);
+      const scale = i % 2 === 0 ? largeLine : smallLine;
+      const x = 0 + radius * cos(this.angle);
+      const y = 0 + radius * sin(this.angle);
+      const x1 = 0 + (radius + scale) * cos(this.angle);
+      const y1 = 0 + (radius + scale) * sin(this.angle);
+      strokeWeight(0.5);
+      stroke(this.r, this.g, this.b);
+      line(x, y, x1, y1);
+    }
     pop();
+    this.angle += 1;
+
+    for (let i = 0; i < this.positionHistory.length; i++) {
+      strokeWeight(1.5);
+      point(this.positionHistory[i].x, this.positionHistory[i].y);
+    }
   }
 }

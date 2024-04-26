@@ -3,8 +3,21 @@
 // The Coding Train / Daniel Shiffman
 
 class smartBoid extends regularBoid {
-  constructor(position, flockingRadius, dna, lifeForce, lifeTimer, deathTimer, birthState) {
-    super(position, flockingRadius, lifeForce, lifeTimer, deathTimer, birthState);
+  constructor(
+    position,
+    flockingRadius,
+    dna,
+    lifeForce,
+    lifeTimer,
+    deathTimer,
+    birthState,
+    positionHistory,
+    r,
+    g,
+    b,
+    angle
+  ) {
+    super(position, flockingRadius, lifeForce, lifeTimer, deathTimer, birthState, positionHistory, r, g, b, angle);
 
     this.dna = dna;
     this.fitness = 0;
@@ -21,6 +34,7 @@ class smartBoid extends regularBoid {
 
   run(boids) {
     this.flock(boids, this.dna.genes);
+    this.show(this.dna.genes);
   }
 
   flock(boids, genes) {
@@ -83,6 +97,68 @@ class smartBoid extends regularBoid {
     this.acceleration.add(alignment);
     this.acceleration.add(cohesion);
     this.acceleration.add(separation);
+  }
+
+  show(genes) {
+    const mapLifeForce = map(this.lifeForce, 0, 10, 20, 255);
+    colorMode(HSL);
+
+    //trail
+    for (let i = 0; i < this.positionHistory.length; i++) {
+      strokeWeight(1.5);
+      stroke(mapLifeForce, mapLifeForce);
+      point(this.positionHistory[i].x, this.positionHistory[i].y);
+    }
+
+    noStroke();
+    fill(180, 60, 70, mapLifeForce);
+    ellipse(this.position.x, this.position.y, this.size * 0.75);
+    fill(mapLifeForce, mapLifeForce);
+    ellipse(this.position.x, this.position.y, this.size * 0.5);
+
+    const numDots = 8;
+    const radius = this.size * 0.5;
+    const smallLine = this.size * 0.2;
+    const largeLine = this.size * 0.4;
+
+    const compound1 = genes[4];
+    const compound2 = genes[4] + 45;
+    const compound3 = genes[4] + 90;
+    const compound4 = genes[4] + 135;
+
+    push();
+    translate(this.position.x, this.position.y);
+    rotate(this.velocity.heading());
+    for (let i = 0; i < numDots; i++) {
+      this.angle = map(i, 0, numDots, 0, TWO_PI);
+      const scale = i % 2 === 0 ? largeLine : smallLine;
+
+      let compound;
+      if (i % 1) {
+        compound = compound1;
+      } else if (i % 2) {
+        compound = compound2;
+      } else if (i % 3) {
+        compound = compound3;
+      } else {
+        compound = compound4;
+      }
+
+      if (compound > 360) {
+        compound -= 360;
+      }
+
+      const x = 0 + radius * cos(this.angle);
+      const y = 0 + radius * sin(this.angle);
+      const x1 = 0 + (radius + scale) * cos(this.angle);
+      const y1 = 0 + (radius + scale) * sin(this.angle);
+
+      strokeWeight(1.7);
+      stroke(compound, genes[5], map(this.lifeForce, 0, 10, 10, genes[6]), mapLifeForce);
+      line(x, y, x1, y1);
+    }
+    pop();
+    this.angle += 1;
   }
 
   getFitness() {
