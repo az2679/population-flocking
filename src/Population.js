@@ -1,4 +1,5 @@
 // Smart Rockets, https://thecodingtrain.com/more/achive/nature-of-code/9-genetic-algorithms/9.5-fitness-genotype-vs-phenotype.html
+// 9.8 Improved Selection Pool, https://editor.p5js.org/codingtrain/sketches/eBrC90hCl
 // The Coding Train, Daniel Shiffman
 
 class Population {
@@ -59,51 +60,64 @@ class Population {
     }
   }
 
-  selection() {
-    this.matingPool = [];
-
-    let maxFitness = this.getMaxFitness();
-
-    // Calculate fitness for each member of the population (scaled to value between 0 and 1)
-    // Based on fitness, each member will get added to the mating pool a certain number of times
-    // A higher fitness = more entries to mating pool = more likely to be picked as a parent
-    // A lower fitness = fewer entries to mating pool = less likely to be picked as a parent
-    for (let i = 0; i < this.population.length; i++) {
-      let fitnessNormal = map(this.population[i].getFitness(), 0, maxFitness, 0, 1);
-      let n = int(fitnessNormal * 100);
-      for (let j = 0; j < n; j++) {
-        this.matingPool.push(this.population[i]);
-      }
-    }
-  }
-
   reproduction() {
-    // let positions = this.population.map((boid) => createVector(boid.position.x, boid.position.y));
+    let maxFitness = 0;
+    let totalFitness = 0;
 
     for (let i = 0; i < this.population.length; i++) {
-      let m = int(random(this.matingPool.length));
-      let d = int(random(this.matingPool.length));
+      if (this.population[i].fitness > maxFitness) {
+        maxFitness = this.population[i].fitness;
+      }
+      totalFitness += this.population[i].fitness;
+    }
 
-      let mom = this.matingPool[m];
-      let dad = this.matingPool[d];
+    for (let i = 0; i < this.population.length; i++) {
+      this.population[i].prob = this.population[i].fitness / totalFitness;
+    }
 
-      let momgenes = mom.getDNA();
-      let dadgenes = dad.getDNA();
+    for (let i = 0; i < this.population.length; i++) {
+      // let partnerA = this.acceptReject(maxFitness);
+      // let partnerB = this.acceptReject(maxFitness);
 
-      let child = momgenes.crossover(dadgenes);
+      let partnerA = this.pickOne();
+      let partnerB = this.pickOne();
+
+      let child = partnerA.crossover(partnerB);
+
       child.mutate(this.mutationRate);
-
-      // this.population[i] = new smartBoid(positions[i], this.flockingRadius, child, this.population.length);
-      // this.population[i] = new smartBoid(
-      //   createVector(random(width), random(height)),
-      //   this.flockingRadius,
-      //   child,
-      //   this.population.length
-      // );
       this.population[i].genes = child;
     }
     this.generations++;
   }
+
+  pickOne() {
+    let index = 0;
+    let r = random(1);
+
+    while (r > 0) {
+      r = r - this.population[index].prob;
+      index++;
+    }
+    index--;
+    return this.population[index].getDNA();
+  }
+
+  // acceptReject(maxFitness) {
+  //   let besafe = 0;
+  //   while (true) {
+  //     let index = floor(random(this.population.length));
+  //     let partner = this.population[index];
+  //     let r = random(maxFitness);
+  //     if (r < partner.fitness) {
+  //       return partner.getDNA();
+  //     }
+  //     besafe++;
+
+  //     if (besafe > 10000) {
+  //       return null;
+  //     }
+  //   }
+  // }
 
   getGenerations() {
     return this.generations;
