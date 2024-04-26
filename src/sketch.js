@@ -1,18 +1,13 @@
-let lifetime; // How long should each generation live
-let population; // Population
-let lifecycle; // Timer for cycle of generation
-let recordtime; // Fastest time to target
+let lifetime;
+let population;
+let lifecycle;
 
 function setup() {
   createCanvas(windowWidth, windowHeight * 0.6);
 
   lifetime = 100;
   lifecycle = 0;
-  recordtime = lifetime;
-
-  let mutationRate = 0.01;
-  population = new Population(mutationRate, 150);
-  console.log(population);
+  population = new Population(0.01, 150);
 }
 
 function draw() {

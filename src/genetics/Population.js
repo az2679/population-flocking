@@ -1,5 +1,6 @@
+//Genetic Algorithm: Fitness, Genotype vs Phenotype, https://thecodingtrain.com/tracks/the-nature-of-code-2/noc/9-genetic-algorithms/5-genotype-vs-phenotype
 // Smart Rockets, https://thecodingtrain.com/more/achive/nature-of-code/9-genetic-algorithms/9.5-fitness-genotype-vs-phenotype.html
-// 9.8 Improved Selection Pool, https://editor.p5js.org/codingtrain/sketches/eBrC90hCl
+// Improved Selection Pool, https://editor.p5js.org/codingtrain/sketches/eBrC90hCl
 // The Coding Train, Daniel Shiffman
 
 class Population {
@@ -76,9 +77,6 @@ class Population {
     }
 
     for (let i = 0; i < this.population.length; i++) {
-      // let partnerA = this.acceptReject(maxFitness);
-      // let partnerB = this.acceptReject(maxFitness);
-
       let partnerA = this.pickOne();
       let partnerB = this.pickOne();
 
@@ -101,23 +99,6 @@ class Population {
     index--;
     return this.population[index].getDNA();
   }
-
-  // acceptReject(maxFitness) {
-  //   let besafe = 0;
-  //   while (true) {
-  //     let index = floor(random(this.population.length));
-  //     let partner = this.population[index];
-  //     let r = random(maxFitness);
-  //     if (r < partner.fitness) {
-  //       return partner.getDNA();
-  //     }
-  //     besafe++;
-
-  //     if (besafe > 10000) {
-  //       return null;
-  //     }
-  //   }
-  // }
 
   getGenerations() {
     return this.generations;
