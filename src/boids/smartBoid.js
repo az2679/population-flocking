@@ -112,14 +112,14 @@ class smartBoid extends regularBoid {
 
     noStroke();
     fill(180, 60, 70, mapLifeForce);
-    ellipse(this.position.x, this.position.y, this.size * 0.75);
+    ellipse(this.position.x, this.position.y, this.size * 1.5);
     fill(mapLifeForce, mapLifeForce);
-    ellipse(this.position.x, this.position.y, this.size * 0.5);
+    ellipse(this.position.x, this.position.y, this.size);
 
     const numDots = 8;
-    const radius = this.size * 0.5;
-    const smallLine = this.size * 0.2;
-    const largeLine = this.size * 0.4;
+    const radius = this.size;
+    const smallLine = this.size * 0.6;
+    const largeLine = this.size * 0.8;
 
     const compound1 = genes[4];
     const compound2 = genes[4] + 45;

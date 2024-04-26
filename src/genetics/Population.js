@@ -13,7 +13,7 @@ class Population {
 
     for (let i = 0; i < this.population.length; i++) {
       this.population[i] = new smartBoid(
-        createVector(random(width), random(height)),
+        createVector(random(width), random(height * 0.6)),
         this.flockingRadius,
         new DNA(),
         this.population.length

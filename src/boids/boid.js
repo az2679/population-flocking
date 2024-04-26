@@ -9,7 +9,7 @@ class Boid {
     this.acceleration = createVector();
     this.maxForce = 0.1;
     this.maxSpeed = 3;
-    this.size = 10;
+    this.size = 5;
 
     this.flockingRadius = flockingRadius;
   }
@@ -34,10 +34,10 @@ class Boid {
       this.position.x = width;
     }
 
-    if (this.position.y > height) {
+    if (this.position.y > height * 0.6 - this.size * 2) {
       this.position.y = 0;
     } else if (this.position.y < 0) {
-      this.position.y = height;
+      this.position.y = height * 0.6 - this.size * 2;
     }
   }
 
