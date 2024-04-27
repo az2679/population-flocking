@@ -1,4 +1,7 @@
-# NOC 2024 Final Project
+# ITP NOC 2024 Final Project
+
+Combining Flocking Simulation, the Game of Life, and Genetic Algorithms
+Visually inspired by star children in Howl's Moving Castle by Studio Ghibli/Hayao Miyazaki
 
 **Code References**
 
