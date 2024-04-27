@@ -41,7 +41,6 @@ class Population {
       }
       this.population[i].run(this.population);
       this.population[i].edges();
-      // this.population[i].flock(this.population);
       this.population[i].update();
     }
 

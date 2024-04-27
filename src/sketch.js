@@ -17,6 +17,7 @@ function setup() {
   lifecycle = 0;
   population = new Population(0.01, 150);
 
+  //1 of 2 -- flocking boids with game of life
   // for (let i = 0; i < 10; i++) {
   //   flock.push(new regularBoid(createVector(random(width), random(height * 0.6)), 150));
   // }
@@ -27,6 +28,7 @@ function draw() {
   background(230, 200);
   setGradient(0, 0, windowWidth, windowHeight * 0.6, c1, c2);
 
+  //2 of 2 -- flocking boids with game of life
   // let deadBoids = [];
   // let birthedBoids = [];
   // for (let boid of flock) {
@@ -51,7 +53,7 @@ function draw() {
 
   population.live();
   if (lifecycle < lifetime) {
-    // populationSizes.push(population.population.length);
+    // populationSizes.push(population.population.length); //uncomment if drawGraph()
     lifecycle++;
   } else {
     lifecycle = 0;
@@ -65,10 +67,7 @@ function draw() {
   text('Cycles left: ' + (lifetime - lifecycle), 10, 36 + height * 0.6);
   text('Current Population: ' + population.population.length, 10, 54 + height * 0.6);
 
-  // stroke(255, 255, 255, 100);
-  // noFill();
-  // ellipse(population.population[0].position.x, population.population[0].position.y, population.flockingRadius * 2);
-
+  //graph of population size over time
   // drawGraph();
 }
 
