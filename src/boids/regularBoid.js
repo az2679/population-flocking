@@ -12,9 +12,9 @@ class regularBoid extends Boid {
 
     this.positionHistory = [];
 
-    this.r = random(255);
-    this.g = random(255);
-    this.b = random(255);
+    this.hue = random(360);
+    this.sat = random(70, 100);
+    this.light = random(40, 70);
 
     this.angle = 0;
   }
@@ -117,36 +117,65 @@ class regularBoid extends Boid {
   }
 
   show() {
-    strokeWeight(2);
-    stroke(map(this.lifeForce, 0, 10, 150, 255));
-    fill(map(this.lifeForce, 0, 10, 0, 255));
+    colorMode(HSL, 360, 100, 100, 100);
+    const mapLifeForce = map(this.lifeForce, 0, 10, 30, 100);
+    const mapAlpha = map(this.lifeForce, 0, 10, 80, 100);
 
-    ellipse(this.position.x, this.position.y, this.size * 0.2);
+    //trail
+    for (let i = 0; i < this.positionHistory.length; i++) {
+      strokeWeight(1.5);
+      stroke(mapLifeForce);
+      point(this.positionHistory[i].x, this.positionHistory[i].y);
+    }
+
+    noStroke();
+    fill(180, 60, 70, mapAlpha);
+    ellipse(this.position.x, this.position.y, this.size * 1.5);
+    fill(mapLifeForce, mapAlpha);
+    ellipse(this.position.x, this.position.y, this.size);
 
     const numDots = 8;
-    const radius = this.size / 3;
-    const smallLine = this.size * 0.2;
-    const largeLine = this.size * 0.4;
+    const radius = this.size;
+    const smallLine = this.size * 0.6;
+    const largeLine = this.size * 0.8;
+
+    const compound1 = this.hue;
+    const compound2 = this.hue + 90;
+    const compound3 = this.hue + 45;
+    const compound4 = this.hue + 135;
+
     push();
     translate(this.position.x, this.position.y);
     rotate(this.velocity.heading());
     for (let i = 0; i < numDots; i++) {
       this.angle = map(i, 0, numDots, 0, TWO_PI);
       const scale = i % 2 === 0 ? largeLine : smallLine;
+
+      let compound;
+      if (i % 4 === 0) {
+        compound = compound1;
+      } else if (i % 4 === 1) {
+        compound = compound2;
+      } else if (i % 4 === 2) {
+        compound = compound3;
+      } else {
+        compound = compound4;
+      }
+
+      if (compound > 360) {
+        compound -= 360;
+      }
+
       const x = 0 + radius * cos(this.angle);
       const y = 0 + radius * sin(this.angle);
       const x1 = 0 + (radius + scale) * cos(this.angle);
       const y1 = 0 + (radius + scale) * sin(this.angle);
-      strokeWeight(0.5);
-      stroke(this.r, this.g, this.b);
+
+      strokeWeight(1.7);
+      stroke(compound, this.sat, map(this.lifeForce, 0, 10, 20, this.light), mapAlpha);
       line(x, y, x1, y1);
     }
     pop();
     this.angle += 1;
-
-    for (let i = 0; i < this.positionHistory.length; i++) {
-      strokeWeight(1.5);
-      point(this.positionHistory[i].x, this.positionHistory[i].y);
-    }
   }
 }

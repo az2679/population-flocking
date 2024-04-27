@@ -5,15 +5,21 @@ let lifecycle;
 let c1, c2;
 let populationSizes = [];
 
+let flock = [];
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
   c1 = color(15, 43, 65);
   c2 = color(9, 13, 30);
 
-  lifetime = 300;
+  lifetime = 50;
   lifecycle = 0;
   population = new Population(0.01, 150);
+
+  // for (let i = 0; i < 10; i++) {
+  //   flock.push(new regularBoid(createVector(random(width), random(height * 0.6)), 150));
+  // }
 }
 
 function draw() {
@@ -21,8 +27,30 @@ function draw() {
   background(230, 200);
   setGradient(0, 0, windowWidth, windowHeight * 0.6, c1, c2);
 
+  // let deadBoids = [];
+  // let birthedBoids = [];
+  // for (let boid of flock) {
+  //   if (boid.death()) {
+  //     deadBoids.push(boid);
+  //   }
+  //   if (boid.birth()) {
+  //     birthedBoids.push(new regularBoid(createVector(boid.position.x, boid.position.y), 150));
+  //   }
+  //   boid.edges();
+  //   boid.flock(flock);
+  //   boid.update();
+  //   boid.show();
+  // }
+  // for (let boid of deadBoids) {
+  //   let index = flock.indexOf(boid);
+  //   if (index !== -1) {
+  //     flock.splice(index, 1);
+  //   }
+  // }
+  // flock.push(...birthedBoids);
+
+  population.live();
   if (lifecycle < lifetime) {
-    population.live();
     // populationSizes.push(population.population.length);
     lifecycle++;
   } else {
@@ -44,6 +72,7 @@ function draw() {
   // drawGraph();
 }
 
+//3.6 Graphing Sine Wave, https://thecodingtrain.com/tracks/the-nature-of-code-2/noc/3-angles/6-graphing-sine-wave
 function drawGraph() {
   let maxX = populationSizes.length - 1;
   let maxY = max(populationSizes);

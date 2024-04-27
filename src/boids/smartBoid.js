@@ -3,21 +3,8 @@
 // The Coding Train / Daniel Shiffman
 
 class smartBoid extends regularBoid {
-  constructor(
-    position,
-    flockingRadius,
-    dna,
-    lifeForce,
-    lifeTimer,
-    deathTimer,
-    birthState,
-    positionHistory,
-    r,
-    g,
-    b,
-    angle
-  ) {
-    super(position, flockingRadius, lifeForce, lifeTimer, deathTimer, birthState, positionHistory, r, g, b, angle);
+  constructor(position, flockingRadius, dna, lifeForce, lifeTimer, deathTimer, birthState, positionHistory, angle) {
+    super(position, flockingRadius, lifeForce, lifeTimer, deathTimer, birthState, positionHistory, angle);
 
     this.dna = dna;
     this.fitness = 0;
@@ -100,20 +87,21 @@ class smartBoid extends regularBoid {
   }
 
   show(genes) {
-    const mapLifeForce = map(this.lifeForce, 0, 10, 20, 255);
-    colorMode(HSL);
+    colorMode(HSL, 360, 100, 100, 100);
+    const mapLifeForce = map(this.lifeForce, 0, 10, 30, 100);
+    const mapAlpha = map(this.lifeForce, 0, 10, 80, 100);
 
     //trail
     for (let i = 0; i < this.positionHistory.length; i++) {
       strokeWeight(1.5);
-      stroke(mapLifeForce, mapLifeForce);
+      stroke(mapLifeForce);
       point(this.positionHistory[i].x, this.positionHistory[i].y);
     }
 
     noStroke();
-    fill(180, 60, 70, mapLifeForce);
+    fill(180, 60, 70, mapAlpha);
     ellipse(this.position.x, this.position.y, this.size * 1.5);
-    fill(mapLifeForce, mapLifeForce);
+    fill(mapLifeForce, mapAlpha);
     ellipse(this.position.x, this.position.y, this.size);
 
     const numDots = 8;
@@ -122,8 +110,8 @@ class smartBoid extends regularBoid {
     const largeLine = this.size * 0.8;
 
     const compound1 = genes[4];
-    const compound2 = genes[4] + 45;
-    const compound3 = genes[4] + 90;
+    const compound2 = genes[4] + 90;
+    const compound3 = genes[4] + 45;
     const compound4 = genes[4] + 135;
 
     push();
@@ -134,11 +122,11 @@ class smartBoid extends regularBoid {
       const scale = i % 2 === 0 ? largeLine : smallLine;
 
       let compound;
-      if (i % 1) {
+      if (i % 4 === 0) {
         compound = compound1;
-      } else if (i % 2) {
+      } else if (i % 4 === 1) {
         compound = compound2;
-      } else if (i % 3) {
+      } else if (i % 4 === 2) {
         compound = compound3;
       } else {
         compound = compound4;
@@ -154,7 +142,7 @@ class smartBoid extends regularBoid {
       const y1 = 0 + (radius + scale) * sin(this.angle);
 
       strokeWeight(1.7);
-      stroke(compound, genes[5], map(this.lifeForce, 0, 10, 10, genes[6]), mapLifeForce);
+      stroke(compound, genes[5], map(this.lifeForce, 0, 10, 20, genes[6]), mapAlpha);
       line(x, y, x1, y1);
     }
     pop();

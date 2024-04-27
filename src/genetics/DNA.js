@@ -13,8 +13,8 @@ class DNA {
         random(1, 2), //cohesion force scalar
         random(50, 150), //cohesion perception radius
         random(0, 360), //hue
-        random(60, 100), //saturation
-        random(30, 80), //lightness
+        random(70, 100), //saturation
+        random(40, 70), //lightness
       ];
     }
   }
