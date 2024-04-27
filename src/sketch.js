@@ -13,7 +13,7 @@ function setup() {
   c1 = color(15, 43, 65);
   c2 = color(9, 13, 30);
 
-  lifetime = 50;
+  lifetime = 300;
   lifecycle = 0;
   population = new Population(0.01, 150);
 
